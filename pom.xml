@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>component-architecture</artifactId>
+    <description>Spring Boot 3.x project to demonstrate Tom Hombergs' Component-based architecture</description>
+    <version>0.0.1</version>
+    <packaging>pom</packaging>
+
+    <name>component-architecture</name>
+
+    <modules>
+        <module>product</module>
+        <module>ecommerce</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.version>20</java.version>
+
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
+
+        <spring.version>3.1.0</spring.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>product-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>product-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>${flyway.version}</version>
+                    <configuration>
+                        <url>jdbc:postgresql://localhost:15432/cba</url>
+                        <user>cba_username</user>
+                        <password>cba_password</password>
+                        <locations>
+                            <location>filesystem:src/main/resources/db/migration/schema</location>
+                            <location>filesystem:src/main/resources/db/migration/data</location>
+                        </locations>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${jooq.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <jdbc>
+                                    <url>jdbc:postgresql://localhost:15432/cba</url>
+                                    <user>cba_username</user>
+                                    <password>cba_password</password>
+                                </jdbc>
+                                <generator>
+                                    <database>
+                                        <inputSchema>public</inputSchema>
+                                        <excludes>
+                                            flyway_schema_history
+                                        </excludes>
+                                        <includeRoutines>false</includeRoutines>
+                                        <includeIndexes>false</includeIndexes>
+                                    </database>
+                                    <target>
+                                        <packageName>com.example.jooq</packageName>
+                                        <directory>target/generated-sources/jooq</directory>
+                                    </target>
+                                </generator>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

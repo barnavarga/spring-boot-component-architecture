@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  cba-database:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: cba_username
+      POSTGRES_PASSWORD: cba_password
+      POSTGRES_DB: cba
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
